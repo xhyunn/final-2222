@@ -1,0 +1,383 @@
+:root {
+    /* Aesthetic Palette */
+    --bg-color: #E6E6E6;
+    /* Light gray base */
+    --text-color: #1A1A1A;
+    --border-color: #1A1A1A;
+    --border-width: 1px;
+
+    /* Sense Colors (Keep these but maybe slightly muted or sharp?) */
+    --color-sight: #E8C547;
+    --color-sound: #5A7EBF;
+    --color-touch: #D86C5B;
+    --color-smell: #7BA77B;
+    --color-taste: #B58CB5;
+
+    /* Font */
+    --font-stack: "Courier New", Courier, monospace;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-stack);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    text-transform: uppercase;
+    /* Technical feel */
+}
+
+/* Intro Section */
+#intro {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-color);
+    z-index: 100;
+    transition: opacity 0.8s ease-in-out;
+}
+
+#intro.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.intro-content {
+    text-align: center;
+    max-width: 600px;
+    padding: 2rem;
+    border: var(--border-width) solid var(--border-color);
+    background: white;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+    letter-spacing: -0.05em;
+}
+
+.subtitle {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 2rem;
+    text-transform: none;
+}
+
+#exploreBtn {
+    padding: 10px 30px;
+    font-family: var(--font-stack);
+    font-size: 1rem;
+    background: transparent;
+    color: var(--text-color);
+    border: var(--border-width) solid var(--border-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#exploreBtn:hover {
+    background: var(--text-color);
+    color: white;
+}
+
+/* Map Container */
+#mapContainer {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-color);
+    /* Flat background for technical look */
+    display: none;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+#mapContainer.visible {
+    opacity: 1;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    cursor: crosshair;
+    /* Technical cursor */
+    will-change: transform;
+}
+
+#map circle {
+    transition: opacity 0.3s ease;
+}
+
+/* Filter Bar */
+.filter-bar {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0;
+    /* Connected buttons */
+    background: white;
+    border: var(--border-width) solid var(--border-color);
+    z-index: 50;
+}
+
+.filter-title {
+    display: none;
+    /* Hide title for cleaner look */
+}
+
+.filter-btn {
+    border: none;
+    border-right: var(--border-width) solid var(--border-color);
+    background: transparent;
+    color: var(--text-color);
+    padding: 10px 20px;
+    font-family: var(--font-stack);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-btn:last-child {
+    border-right: none;
+}
+
+.filter-btn:hover {
+    background: #f0f0f0;
+}
+
+.filter-btn.active {
+    background: var(--text-color);
+    color: white;
+}
+
+/* Map Controls (Right Side Circles) */
+.map-controls {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 50;
+}
+
+.map-controls button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: var(--border-width) solid var(--border-color);
+    background: white;
+    font-family: var(--font-stack);
+    font-size: 1.2rem;
+    color: var(--text-color);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+.map-controls button:hover {
+    background: var(--text-color);
+    color: white;
+    transform: scale(1.05);
+}
+
+/* Polaroid Tooltip */
+.polaroid {
+    position: absolute;
+    width: 180px;
+    height: 220px;
+    perspective: 1000px;
+    pointer-events: none;
+    z-index: 60;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.polaroid.hidden {
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+.polaroid-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+}
+
+.polaroid.flipped .polaroid-inner {
+    transform: rotateY(180deg);
+}
+
+.polaroid-front,
+.polaroid-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    background: white;
+    border: var(--border-width) solid var(--border-color);
+    padding: 10px;
+}
+
+.polaroid-front {
+    transform: rotateY(0deg);
+}
+
+.polaroid-back {
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.polaroid-image {
+    width: 100%;
+    height: 150px;
+    background-color: #eee;
+    margin-bottom: 10px;
+    background-size: cover;
+    background-position: center;
+    border: var(--border-width) solid var(--border-color);
+}
+
+.polaroid-caption {
+    font-size: 0.7rem;
+    text-align: center;
+    margin-top: 5px;
+}
+
+/* Side Panel (Floating Card) */
+#sidePanel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* Center it initially? Or maybe keep it side but floating */
+    /* Let's stick to side but floating style */
+    top: 40px;
+    left: auto;
+    right: 40px;
+    bottom: auto;
+    transform: none;
+
+    width: 300px;
+    height: auto;
+    max-height: 80vh;
+    background: white;
+    border: var(--border-width) solid var(--border-color);
+    padding: 20px;
+    z-index: 70;
+    overflow-y: auto;
+
+    /* Transition for sliding in/out */
+    transition: opacity 0.3s, transform 0.3s;
+    opacity: 1;
+}
+
+#sidePanel.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(20px);
+}
+
+#closePanel {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-family: var(--font-stack);
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+#panelTitle {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: var(--border-width) solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.panel-image {
+    width: 100%;
+    height: 200px;
+    background-color: #eee;
+    margin-bottom: 1rem;
+    background-size: cover;
+    background-position: center;
+    border: var(--border-width) solid var(--border-color);
+}
+
+.sense-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 0.8rem;
+}
+
+.sense-label {
+    width: 60px;
+}
+
+.sense-bar-bg {
+    flex-grow: 1;
+    height: 10px;
+    background: transparent;
+    border: var(--border-width) solid var(--border-color);
+    margin: 0 10px;
+}
+
+.sense-bar-fill {
+    height: 100%;
+    background: var(--text-color);
+    /* Monochrome bars? Or keep color? Let's keep color for data clarity */
+}
+
+#panelDescription {
+    margin-top: 1.5rem;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    text-transform: none;
+    border-top: var(--border-width) solid var(--border-color);
+    padding-top: 10px;
+}
+
+/* Stats in Polaroid */
+.mini-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+    font-size: 0.6rem;
+    width: 100%;
+}
+
+.mini-bar-bg {
+    flex-grow: 1;
+    height: 6px;
+    border: 1px solid #eee;
+}
+
+/* Ripple */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid var(--text-color);
+    transform: scale(0);
+    animation: ripple-anim 0.6s linear;
+    pointer-events: none;
+}
